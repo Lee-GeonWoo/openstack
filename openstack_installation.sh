@@ -7,25 +7,25 @@ LOCAL_CONF='/opt/stack/devstack/local.conf'
 HOST_IP=`hostname -I | cut -d ' ' -f1`
 OPENSTACK_PATH="/usr/local/bin/openstack"
 
-########### Make sure only root can run our script ###########
+####################### Make sure only root can run our script #######################
 if (( $EUID != 0 )); then
 	echo "This script must be run as root"
 	echo ${EUID}
 	exit
 fi
 
-###################### Translate sources #######################
+############################### Translate sources ################################
 sed -i 's/kr.archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
 sed -i 's/security.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
 
-###################### Update and Upgrade ######################
+############################### Update and Upgrade ###############################
 apt update && apt dist-upgrade -y
 
-######################## Make stack user ########################
+################################# Make stack user #################################
 useradd -s /bin/bash -d /opt/stack -m stack
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
 
-######################## Install Devstack ########################
+################################# Install Devstack #################################
 if [ -f ${DEVSTACK_PATH} ]; then
 	echo "devstack file exist"
 else
@@ -48,7 +48,7 @@ do
 done
 echo ''
 
-########################### Check local.conf File ###########################
+############################## Check local.conf File #################################
 while :
 do
 	if [ ! -e ${LOCAL_CONF} ]; then
@@ -69,20 +69,20 @@ do
 	fi
 done
 
-##################### Fix outfilter.py to solve UTF-8 problem #####################
+######################## Fix outfilter.py to solve UTF-8 problem ########################
 OUTFILTER_PATH='/opt/stack/devstack/tools/outfilter.py'
 sed -i "s/outfile.write(ts_line.encode('utf-8'))/outfile.write(ts_line.encode('utf-8','surrogatepass'))/g" ${OUTFILTER_PATH}
 
-###### Start Install Openstack ######
+################################ Start Install Openstack ###################################
 su - stack -c "devstack/stack.sh"
 
-### OVS setting ###
+####################################### OVS setting #######################################
 su - stack -c "sudo ovs-vsctl add-port br-ex ${SECOND_INTERFACE}"
 
-### Start openrc ###
+####################################### Start openrc #######################################
 source ${DEVSTACK_PATH}/openrc admin admin
 
-### Setting SEC_GROUP
+#################################### Setting SEC_GROUP ####################################
 SEC_ID="$(${OPENSTACK_PATH} security group list --project admin | grep default | cut -f 2 -d ' ')"
 
 while :
@@ -96,6 +96,7 @@ do
 
 done
 
+### Open all the inbound and outbound traffic and SSH ports
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol any --egress
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol any --ingress
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol tcp --dst-port 22:22
