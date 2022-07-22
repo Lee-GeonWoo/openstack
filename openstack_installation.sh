@@ -58,7 +58,7 @@ do
 		'\nDATABASE_PASSWORD=$ADMIN_PASSWORD\nRABBIT_PASSWORD=$ADMIN_PASSWORD\nSERVICE_PASSWORD=$ADMIN_PASSWORD\nSERVICE_TOKEN=$ADMIN_PASSWORD'\
 		'\n\nFLAT_INTERFACE='${SECOND_INTERFACE}''\
 	       '\n\nLOGFILE=$DEST/logs/stack.sh.log\nLOGDAYS=2\nLOG_COLOR=True\n\n#Barbican\n#enable_plugin barbican'\
-	       'https://opendev.org/openstack/barbican stable/victoria\n\ndisable_service tempest\ndisable_service c-vol cinder c-sch c-bak c-api'\
+	       'https://opendev.org/openstack/barbican stable/wallaby\n\ndisable_service tempest\ndisable_service c-vol cinder c-sch c-bak c-api'\
 	       '\n\nUSE_PYTHON3=True\n\n#Disable security groups\nQ_USE_SECGROUP=False'\
 	       '\nLIBVIRT_FIREWALL_DRIVER=nova.virt.firewall.NoopFirewallDriver'\
 	       '\n\n[[post-config|/etc/neutron/dhcp_agent.ini]]\n[DEFAULT]\nenable_isolated_metadata=True\n' >> $LOCAL_CONF
@@ -133,4 +133,3 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 ${OPENSTACK_PATH} image create --disk-format raw --file /root/openstack_installation/${IMAGE} --shared ubuntu_18.04
 
 echo "********************OPENSTACK INSTALLATION AND BASIC SETTING IS FINISHED !!!!********************"
-Footer
