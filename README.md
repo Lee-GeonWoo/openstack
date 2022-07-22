@@ -1,3 +1,3 @@
-# Install Openstack(victoria)
+# Install Openstack (wallaby ver.)
 
 openstack installation ver. wallaby
