@@ -10,7 +10,7 @@ OPENSTACK_PATH="/usr/local/bin/openstack"
 ########### Make sure only root can run our script ###########
 if (( $EUID != 0 )); then
 	echo "This script must be run as root"
-	echo $EUID
+	echo ${EUID}
 	exit
 fi
 
@@ -21,12 +21,12 @@ sed -i 's/security.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
 ###################### Update and Upgrade ######################
 apt update && apt dist-upgrade -y
 
-###### Make stack user ######
+######################## Make stack user ########################
 useradd -s /bin/bash -d /opt/stack -m stack
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
 
-###### Install Devstack ######
-if [ -f $DEVSTACK_PATH ]; then
+######################## Install Devstack ########################
+if [ -f ${DEVSTACK_PATH} ]; then
 	echo "devstack file exist"
 else
 	echo "devstack file not exist"
@@ -40,7 +40,7 @@ do
 	echo -e 'Check Your Openstack PASSWD: '
 	read -s CHECK_PASSWD
 
-	if [ $PASSWD == $CHECK_PASSWD ]; then
+	if [ ${PASSWD} == ${CHECK_PASSWD} ]; then
 		break
 	else
 		echo 'PASSWORD is not same!'
@@ -48,30 +48,30 @@ do
 done
 echo ''
 
-###### Check local.conf File ######
+########################### Check local.conf File ###########################
 while :
 do
-	if [ ! -e $LOCAL_CONF ]; then
+	if [ ! -e ${LOCAL_CONF} ]; then
 		echo "Make local.conf file"
-		touch $LOCAL_CONF
+		touch ${LOCAL_CONF}
 		echo -e '[[local|localrc]]\nHOST_IP='${HOST_IP}'\nMULTI_HOST=True\n\nADMIN_PASSWORD='${PASSWD}\
-		'\nDATABASE_PASSWORD=$ADMIN_PASSWORD\nRABBIT_PASSWORD=$ADMIN_PASSWORD\nSERVICE_PASSWORD=$ADMIN_PASSWORD\nSERVICE_TOKEN=$ADMIN_PASSWORD'\
+		'\nDATABASE_PASSWORD=${ADMIN_PASSWORD}\nRABBIT_PASSWORD=${ADMIN_PASSWORD}\nSERVICE_PASSWORD=${ADMIN_PASSWORD}\nSERVICE_TOKEN=${ADMIN_PASSWORD}'\
 		'\n\nFLAT_INTERFACE='${SECOND_INTERFACE}''\
 	       '\n\nLOGFILE=$DEST/logs/stack.sh.log\nLOGDAYS=2\nLOG_COLOR=True\n\n#Barbican\n#enable_plugin barbican'\
 	       'https://opendev.org/openstack/barbican stable/wallaby\n\ndisable_service tempest\ndisable_service c-vol cinder c-sch c-bak c-api'\
 	       '\n\nUSE_PYTHON3=True\n\n#Disable security groups\nQ_USE_SECGROUP=False'\
 	       '\nLIBVIRT_FIREWALL_DRIVER=nova.virt.firewall.NoopFirewallDriver'\
-	       '\n\n[[post-config|/etc/neutron/dhcp_agent.ini]]\n[DEFAULT]\nenable_isolated_metadata=True\n' >> $LOCAL_CONF
+	       '\n\n[[post-config|/etc/neutron/dhcp_agent.ini]]\n[DEFAULT]\nenable_isolated_metadata=True\n' >> ${LOCAL_CONF}
 		break
 	else
-		rm -rf $LOCAL_CONF
+		rm -rf ${LOCAL_CONF}
 		echo 'Delete original local.conf'
 	fi
 done
 
-###### Fix outfilter.py to solve UTF-8 problem ######
+##################### Fix outfilter.py to solve UTF-8 problem #####################
 OUTFILTER_PATH='/opt/stack/devstack/tools/outfilter.py'
-sed -i "s/outfile.write(ts_line.encode('utf-8'))/outfile.write(ts_line.encode('utf-8','surrogatepass'))/g" $OUTFILTER_PATH
+sed -i "s/outfile.write(ts_line.encode('utf-8'))/outfile.write(ts_line.encode('utf-8','surrogatepass'))/g" ${OUTFILTER_PATH}
 
 ###### Start Install Openstack ######
 su - stack -c "devstack/stack.sh"
