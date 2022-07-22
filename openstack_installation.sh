@@ -7,18 +7,18 @@ LOCAL_CONF='/opt/stack/devstack/local.conf'
 HOST_IP=`hostname -I | cut -d ' ' -f1`
 OPENSTACK_PATH="/usr/local/bin/openstack"
 
-####################### Make sure only root can run our script #######################
+################################# Make sure only root can run our script #################################
 if (( $EUID != 0 )); then
 	echo "This script must be run as root"
 	echo ${EUID}
 	exit
 fi
 
-############################### Translate sources ################################
+################################# Translate sources #################################
 sed -i 's/kr.archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
 sed -i 's/security.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
 
-############################### Update and Upgrade ###############################
+################################# Update and Upgrade #################################
 apt update && apt dist-upgrade -y
 
 ################################# Make stack user #################################
@@ -48,7 +48,7 @@ do
 done
 echo ''
 
-############################## Check local.conf File #################################
+################################# Check local.conf File #################################
 while :
 do
 	if [ ! -e ${LOCAL_CONF} ]; then
@@ -69,20 +69,20 @@ do
 	fi
 done
 
-######################## Fix outfilter.py to solve UTF-8 problem ########################
+################################# Fix outfilter.py to solve UTF-8 problem #################################
 OUTFILTER_PATH='/opt/stack/devstack/tools/outfilter.py'
 sed -i "s/outfile.write(ts_line.encode('utf-8'))/outfile.write(ts_line.encode('utf-8','surrogatepass'))/g" ${OUTFILTER_PATH}
 
-################################ Start Install Openstack ###################################
+################################# Start Install Openstack #################################
 su - stack -c "devstack/stack.sh"
 
-####################################### OVS setting #######################################
+################################# OVS setting #################################
 su - stack -c "sudo ovs-vsctl add-port br-ex ${SECOND_INTERFACE}"
 
-####################################### Start openrc #######################################
+################################# Start openrc #################################
 source ${DEVSTACK_PATH}/openrc admin admin
 
-#################################### Setting SEC_GROUP ####################################
+################################# Setting SEC_GROUP #################################
 SEC_ID="$(${OPENSTACK_PATH} security group list --project admin | grep default | cut -f 2 -d ' ')"
 
 while :
@@ -96,12 +96,12 @@ do
 
 done
 
-### Open all the inbound and outbound traffic and SSH ports
+######## Open all the inbound and outbound traffic and SSH ports
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol any --egress
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol any --ingress
 ${OPENSTACK_PATH} security group rule create ${SEC_ID} --protocol tcp --dst-port 22:22
 
-### Setting Public Network
+######## Setting Public Network
 ROUTER_ID="$(${OPENSTACK_PATH} router list | grep ACTIVE | cut -f 2 -d ' ')"
 PORT_ID_1="$(${OPENSTACK_PATH} router show router1 | grep "port_id" | cut -f 4 -d '"')"
 PORT_ID_2="$(${OPENSTACK_PATH} router show router1 | grep "port_id" | cut -f 16 -d '"')"
@@ -125,7 +125,7 @@ DNS_SERVER="8.8.8.8"
 
 ${OPENSTACK_PATH} subnet create --project admin --network public --subnet-range ${HOST_IP_CIDR} --gateway ${GATEWAY} --dns-nameserver ${DNS_SERVER} --ip-version 4 public_subnet
 
-### Download Ubuntu Image 18.04
+######## Download Ubuntu Image 18.04
 FILE_ID="1gWL91lkHUjH8Mm-mIRj-LPDk9joUDtKI"
 IMAGE="ubuntu_18.04.img"
 
@@ -133,4 +133,4 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 
 ${OPENSTACK_PATH} image create --disk-format raw --file /root/openstack_installation/${IMAGE} --shared ubuntu_18.04
 
-echo "********************OPENSTACK INSTALLATION AND BASIC SETTING IS FINISHED !!!!********************"
+echo "== OPENSTACK INSTALLATION AND BASIC SETTING IS FINISHED =="
