@@ -1,5 +1,6 @@
 # Install Openstack (wallaby ver.)
 
+## Install Openstack
 It should be connected by 2 LAN lines.
 ```
 $ ifconfig
