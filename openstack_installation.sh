@@ -30,7 +30,7 @@ if [ -f ${DEVSTACK_PATH} ]; then
 	echo "devstack file exist"
 else
 	echo "devstack file not exist"
-        su - stack -c "git clone https://github.com/openstack/devstack/tree/stable/wallaby"
+        su - stack -c "git clone -b stable/wallaby https://github.com/openstack/devstack.git"
 fi
 
 while :
@@ -131,6 +131,6 @@ IMAGE="ubuntu_18.04.img"
 
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=${FILE_ID}' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${FILE_ID}" -O ${IMAGE} && rm -rf /tmp/cookies.txt
 
-${OPENSTACK_PATH} image create --disk-format raw --file /root/openstack_installation/${IMAGE} --shared ubuntu_18.04
+${OPENSTACK_PATH} image create --disk-format raw --file /root/openstack/${IMAGE} --shared ubuntu_18.04
 
 echo "== OPENSTACK INSTALLATION AND BASIC SETTING IS FINISHED =="
