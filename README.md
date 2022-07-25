@@ -16,6 +16,7 @@ Set Openstack Dashboard Password
 
 
 
+
 ## Uninstall Openstack
 ```
 $ sudo su - stack
