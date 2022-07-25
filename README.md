@@ -15,7 +15,7 @@ Set Openstack Dashboard Password
 
 
 
-# Uninstall Openstack
+## Uninstall Openstack
 ```
 $ sudo su - stack
 $ cd devstack
