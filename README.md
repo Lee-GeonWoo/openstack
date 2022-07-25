@@ -26,8 +26,6 @@ $ cd devstack
 $ ./unstack.sh
 $ ./clean.sh
 ```
-
-Delete stack user
 ```
 $ sudo su -
 $ rm -rf /opt/stack
