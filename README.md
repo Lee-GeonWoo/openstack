@@ -1,6 +1,6 @@
 # Install Openstack (wallaby ver.)
 
-## Install Openstack
+## Install devstack
 It should be connected by 2 LAN lines.
 ```
 $ ifconfig
@@ -19,7 +19,7 @@ Set Openstack Dashboard Password
 
 
 
-## Uninstall Openstack
+## Uninstall devstack
 ```
 $ sudo su - stack
 $ cd devstack
