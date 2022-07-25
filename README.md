@@ -8,6 +8,8 @@ $ ifconfig
 
 After checking the interface, copy the INTERFACE_ID that inet is not set (ex. eno2 or enx~~)
 ```
+$ git clone https://github.com/Lee-GeonWoo/openstack.git
+$ cd openstack
 $ chmod +x openstack_installation.sh
 $ source openstack_installation.sh ${INTERFACE_ID}
 ```
