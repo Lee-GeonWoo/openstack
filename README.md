@@ -2,12 +2,13 @@
 
 It should be connected by 2 LAN lines.
 ```
-ifconfig
+$ ifconfig
 ```
 
 After checking the interface, copy the INTERFACE_ID that inet is not set (ex. eno2 or enx~~)
 ```
-source openstack_installation.sh ${INTERFACE_ID}
+$ chmod +x openstack_installation.sh
+$ source openstack_installation.sh ${INTERFACE_ID}
 ```
 
 Set Openstack Dashboard Password
@@ -16,16 +17,17 @@ Set Openstack Dashboard Password
 
 # Uninstall Openstack
 ```
-sudo su - stack
-cd devstack
-./unstack.sh
-./clean.sh
+$ sudo su - stack
+$ cd devstack
+$ ./unstack.sh
+$ ./clean.sh
 ```
 
+Delete stack user
 ```
-sudo su -
-rm -rf /opt/stack
-rm -rf /usr/local/bin/
-rm -rf /usr/local/lib/
-userdel -rf stack
+$ sudo su -
+$ rm -rf /opt/stack
+$ rm -rf /usr/local/bin/
+$ rm -rf /usr/local/lib/
+$ userdel -rf stack
 ```
